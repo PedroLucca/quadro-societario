@@ -20,6 +20,14 @@ class SocioController extends AbstractController
         return $this->json($socios);
     }
 
+    #[Route('/total', methods: ['GET'])]
+    public function totalSocios(EntityManagerInterface $em): JsonResponse
+    {
+        $total = $em->getRepository(Socio::class)->count([]);
+
+        return $this->json(['total' => $total]);
+    }
+
     #[Route('', methods: ['POST'])]
     public function criarSocio(Request $request, EntityManagerInterface $em): JsonResponse
     {
