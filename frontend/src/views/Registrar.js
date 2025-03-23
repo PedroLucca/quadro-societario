@@ -6,7 +6,7 @@ import {
   Typography, 
   Paper, 
   Container, 
-  Grid,
+  Grid2,
   Link,
   Alert
 } from '@mui/material';
@@ -23,7 +23,6 @@ const Registrar = () => {
   const navigate = useNavigate();
   const { register, authenticated } = useContext(AuthContext);
 
-  // Redirecionar se já estiver autenticado
   useEffect(() => {
     if (authenticated) {
       navigate('/');
@@ -34,7 +33,6 @@ const Registrar = () => {
     e.preventDefault();
     setError('');
 
-    // Validações básicas
     if (senha !== confirmSenha) {
       setError('As senhas não coincidem');
       return;
@@ -51,7 +49,6 @@ const Registrar = () => {
       const result = await register({ nome, email, senha });
       
       if (result.success) {
-        // Se o registro for bem-sucedido, redirecione para o login
         navigate('/login', { state: { message: 'Cadastro realizado com sucesso! Faça login para continuar.' } });
       } else {
         setError(result.error);
@@ -166,13 +163,13 @@ const Registrar = () => {
             >
               {loading ? 'Registrando...' : 'Registrar'}
             </Button>
-            <Grid container>
-              <Grid item>
+            <Grid2 container>
+              <Grid2 item>
                 <Link href="/login" variant="body2">
                   {"Já tem uma conta? Faça login"}
                 </Link>
-              </Grid>
-            </Grid>
+              </Grid2>
+            </Grid2>
           </Box>
         </Paper>
       </Box>
