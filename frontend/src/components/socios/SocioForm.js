@@ -134,6 +134,22 @@ const SocioForm = ({ open, onClose, onSave, socio, loading }) => {
     }
   };
 
+  const handleRemoveEmpresa = (empresaId) => {
+    console.log("Removendo empresa ID:", empresaId);
+    const newSelectedEmpresas = form.empresa_ids.filter(id => id !== empresaId);
+    setForm(prev => ({
+      ...prev,
+      empresa_ids: newSelectedEmpresas
+    }));
+    
+    if (erros.empresa_ids && newSelectedEmpresas.length > 0) {
+      setErros(prev => ({
+        ...prev,
+        empresa_ids: ''
+      }));
+    }
+  };
+
   return (
     <Dialog open={open} onClose={onClose} maxWidth="sm" fullWidth>
       <DialogTitle>{socio ? 'Editar Sócio' : 'Novo Sócio'}</DialogTitle>
@@ -181,20 +197,7 @@ const SocioForm = ({ open, onClose, onSave, socio, loading }) => {
                 value={form.empresa_ids}
                 onChange={handleChange}
                 input={<OutlinedInput label="Empresas" />}
-                renderValue={(selected) => (
-                  <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 0.5 }}>
-                    {selected.map((value) => {
-                      const empresa = empresas.find(emp => emp.id === value);
-                      return (
-                        <Chip 
-                          key={value} 
-                          label={empresa ? empresa.nome : value} 
-                          size="small"
-                        />
-                      );
-                    })}
-                  </Box>
-                )}
+                renderValue={(selected) => `${selected.length} empresa(s) selecionada(s)`}
                 MenuProps={MenuProps}
                 required
               >
@@ -216,6 +219,23 @@ const SocioForm = ({ open, onClose, onSave, socio, loading }) => {
               </Select>
               {erros.empresa_ids && <FormHelperText>{erros.empresa_ids}</FormHelperText>}
             </FormControl>
+          </Grid2>
+          <Grid2 item size={{ xs: 12}}>
+            <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 0.5, mt: 1 }}>
+              {form.empresa_ids.map((empresaId) => {
+                const empresa = empresas.find(emp => emp.id === empresaId);
+                return (
+                  <Chip 
+                    key={empresaId} 
+                    label={empresa ? empresa.nome : empresaId} 
+                    size="small"
+                    onDelete={() => handleRemoveEmpresa(empresaId)}
+                    disabled={loading}
+                    sx={{ margin: '2px' }}
+                  />
+                );
+              })}
+            </Box>
           </Grid2>
         </Grid2>
       </DialogContent>
