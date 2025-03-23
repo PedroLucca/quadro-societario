@@ -73,7 +73,11 @@ const EmpresaForm = ({ open, onClose, onSave, empresa, loading }) => {
 
   const handleSubmit = () => {
     if (validarForm()) {
-      onSave(form);
+      const formData = {
+        ...form,
+        cnpj: form.cnpj.replace(/\D/g, '')
+      };
+      onSave(formData);
     }
   };
 

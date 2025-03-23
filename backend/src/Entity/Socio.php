@@ -32,4 +32,14 @@ class Socio
 
     public function getEmpresa(): Empresa { return $this->empresa; }
     public function setEmpresa(Empresa $empresa): void { $this->empresa = $empresa; }
+
+    public function toArray(): array
+    {
+        return [
+            'id' => $this->getId(),
+            'nome' => $this->getNome(),
+            'cpf' => $this->getCpf(),
+            'empresa' => $this->getEmpresa()->toArray()
+        ];
+    }
 }

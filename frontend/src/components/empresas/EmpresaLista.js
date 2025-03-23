@@ -1,4 +1,4 @@
-import React, { useContext, useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import { Box, Button, Typography } from '@mui/material';
 import AddIcon from '@mui/icons-material/Add';
 import TabelaDados from '../commons/TabelaDados';
@@ -12,7 +12,8 @@ const EmpresaLista = () => {
     loading, 
     error, 
     filtros, 
-    setFiltros, 
+    setFiltros,
+    fetchEmpresas,
     deleteEmpresa, 
     createEmpresa, 
     updateEmpresa 
@@ -36,6 +37,10 @@ const EmpresaLista = () => {
     },
     { id: 'endereco', label: 'Endereço', minWidth: 200    },
 ];
+
+useEffect(() => {//Fazer requisicao para buscar as empresas
+      fetchEmpresas();
+    }, []);
 
 const handleSearch = (valor) => {
   setSearch(valor);

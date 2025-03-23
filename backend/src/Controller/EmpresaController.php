@@ -18,13 +18,7 @@ class EmpresaController extends AbstractController
         $empresas = $em->getRepository(Empresa::class)->findAll();
 
         $lista = array_map(function(Empresa $empresa) {
-            return [
-                'id' => $empresa->getId(),
-                'nome' => $empresa->getNome(),
-                'cnpj' => $empresa->getCnpj(),
-                'endereco' => $empresa->getEndereco(),
-                'socios' => $empresa->getSocios()->toArray(),
-            ];
+            return $empresa->toArray();
         }, $empresas);
 
         return $this->json($lista);
@@ -51,5 +45,39 @@ class EmpresaController extends AbstractController
         $em->flush();
 
         return $this->json($empresa, 201);
+    }
+
+    #[Route('/{id}', methods: ['PUT'])]
+    public function editarEmpresa(int $id, Request $request, EntityManagerInterface $em): JsonResponse
+    {
+        $empresa = $em->getRepository(Empresa::class)->find($id);
+
+        if (!$empresa) {
+            return $this->json(['erro' => 'Empresa não encontrada.'], 404);
+        }
+
+        $dados = json_decode($request->getContent(), true);
+        $empresa->setNome($dados['nome'] ?? $empresa->getNome());
+        $empresa->setCnpj($dados['cnpj'] ?? $empresa->getCnpj());
+        $empresa->setEndereco($dados['endereco'] ?? $empresa->getEndereco());
+
+        $em->flush();
+
+        return $this->json($empresa->toArray());
+    }
+
+    #[Route('/{id}', methods: ['DELETE'])]
+    public function deletarEmpresa(int $id, EntityManagerInterface $em): JsonResponse
+    {
+        $empresa = $em->getRepository(Empresa::class)->find($id);
+
+        if (!$empresa) {
+            return $this->json(['erro' => 'Empresa não encontrada.'], 404);
+        }
+
+        $em->remove($empresa);
+        $em->flush();
+
+        return $this->json(['mensagem' => 'Empresa deletada com sucesso.']);
     }
 }

@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import {
   Paper,
   Table,
@@ -33,8 +33,8 @@ const TabelaDados = ({
   onSearch,
   search,
 }) => {
-  const [pagina, setPagina] = React.useState(0);
-  const [linhasPorPagina, setLinhasPorPagina] = React.useState(10);
+  const [pagina, setPagina] = useState(0);
+  const [linhasPorPagina, setLinhasPorPagina] = useState(10);
 
   const handleChangePagina = (event, newPage) => {
     setPagina(newPage);
@@ -49,15 +49,12 @@ const TabelaDados = ({
 
   return (
     <Paper elevation={3} sx={{ width: '100%', overflow: 'hidden' }}>
-      <Box sx={{ p: 2, display: 'flex', flexDirection: { xs: 'column', sm: 'row' }, alignItems: { sm: 'center' }, justifyContent: 'space-between', gap: 2 }}>
-        <Typography variant="h6" component="div">
-          {titulo}
-        </Typography>
+      <Box sx={{ p: 2 }}>
         {onSearch && (
-          <Box sx={{ display: 'flex', alignItems: 'center' }}>
             <TextField
               variant="outlined"
               size="small"
+              fullWidth
               placeholder={searchPlaceholder || "Buscar..."}
               value={search}
               onChange={(e) => onSearch(e.target.value)}
@@ -65,7 +62,6 @@ const TabelaDados = ({
                 endAdornment: <SearchIcon color="action" />,
               }}
             />
-          </Box>
         )}
       </Box>
 
@@ -92,6 +88,12 @@ const TabelaDados = ({
               <TableRow>
                 <TableCell colSpan={colunas.length + 1} align="center">
                   Erro ao carregar dados: {error}
+                </TableCell>
+              </TableRow>
+            ) : loading ? (
+              <TableRow>
+                <TableCell colSpan={colunas.length + 1} align="center">
+                  Buscando empresas...
                 </TableCell>
               </TableRow>
             ) : visibleRows.length === 0 ? (
@@ -137,13 +139,12 @@ const TabelaDados = ({
           </TableBody>
         </Table>
       </TableContainer>
-
       <TablePagination
         rowsPerPageOptions={[5, 10, 25]}
         component="div"
         count={dados.length}
-        linhasPorPagina={linhasPorPagina}
-        pagina={pagina}
+        rowsPerPage={linhasPorPagina}
+        page={pagina}
         onPageChange={handleChangePagina}
         onRowsPerPageChange={handleLinhasPorPagina}
         labelRowsPerPage="Linhas por página:"

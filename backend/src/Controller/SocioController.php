@@ -48,4 +48,40 @@ class SocioController extends AbstractController
 
         return $this->json($socio, 201);
     }
+
+
+    #[Route('/{id}', methods: ['PUT'])]
+    public function editarSocio(int $id, Request $request, EntityManagerInterface $em): JsonResponse
+    {
+        $socio = $em->getRepository(Socio::class)->find($id);
+
+        if (!$socio) {
+            return $this->json(['erro' => 'Sócio não encontrado.'], 404);
+        }
+
+        $dados = json_decode($request->getContent(), true);
+        $socio->setNome($dados['nome'] ?? $socio->getNome());
+        $socio->setCpf($dados['cpf'] ?? $socio->getCpf());
+        $socio->setEmpresa($dados['empresa_id'] ? $em->getRepository(Empresa::class)->find($dados['empresa_id']) : $socio->getEmpresa());
+
+        $em->flush();
+
+        return $this->json($socio);
+    }
+
+
+    #[Route('/{id}', methods: ['DELETE'])]
+    public function deletarSocio(int $id, EntityManagerInterface $em): JsonResponse
+    {
+        $socio = $em->getRepository(Socio::class)->find($id);
+
+        if (!$socio) {
+            return $this->json(['erro' => 'Sócio não encontrado.'], 404);
+        }
+
+        $em->remove($socio);
+        $em->flush();
+
+        return $this->json(['mensagem' => 'Sócio deletado com sucesso.']);
+    }
 }

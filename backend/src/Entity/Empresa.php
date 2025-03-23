@@ -44,4 +44,25 @@ class Empresa
 
     public function getSocios(): Collection { return $this->socios; }
     public function addSocio(Socio $socio): void { $this->socios->add($socio); $socio->setEmpresa($this); }
+
+    public function toArray(): array
+    {
+        return [
+            'id' => $this->getId(),
+            'nome' => $this->getNome(),
+            'cnpj' => $this->getCnpj(),
+            'endereco' => $this->getEndereco()
+        ];
+    }
+
+    public function toFullArray(): array
+    {
+        return [
+            'id' => $this->getId(),
+            'nome' => $this->getNome(),
+            'cnpj' => $this->getCnpj(),
+            'endereco' => $this->getEndereco(),
+            'socios' => $this->getSocios()->toArray(),
+        ];
+    }
 }
