@@ -6,7 +6,7 @@ import {
   Typography, 
   Paper, 
   Container,
-  Grid,
+  Grid2,
   Link,
   Alert
 } from '@mui/material';
@@ -22,14 +22,12 @@ const Login = () => {
   const location = useLocation();
   const { login, authenticated } = useContext(AuthContext);
 
-  // Redirecionar se já estiver autenticado
   useEffect(() => {
     if (authenticated) {
       navigate('/');
     }
   }, [authenticated, navigate]);
 
-  // Verificar se há mensagem de sucesso do registro
   useEffect(() => {
     if (location.state?.message) {
       setError('');
@@ -138,13 +136,13 @@ const Login = () => {
             >
               {loading ? 'Entrando...' : 'Entrar'}
             </Button>
-            <Grid container>
-              <Grid item>
+            <Grid2 container>
+              <Grid2 item>
                 <Link href="/registrar" variant="body2">
                   {"Não tem uma conta? Registre-se"}
                 </Link>
-              </Grid>
-            </Grid>
+              </Grid2>
+            </Grid2>
           </Box>
         </Paper>
       </Box>

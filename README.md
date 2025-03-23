@@ -1,93 +1,165 @@
-# Desafio Vox Quadro Societário
+# Desafio VOX - Quadro Societário
 
+Este projeto foi desenvolvido como parte do desafio técnico para a vaga de Desenvolvedor Fullstack - Home Office na Vox Tecnologia. O sistema consiste em um backend desenvolvido em Symfony (PHP) e um frontend em React, que juntos permitem o cadastro de empresas e seus respectivos quadros societários.
 
+---
 
-## Getting started
+## Tecnologias Utilizadas
 
-To make it easy for you to get started with GitLab, here's a list of recommended next steps.
+### Backend (Symfony)
+- **PHP 8.1**: Linguagem de programação utilizada.
+- **Symfony 6.4**: Framework PHP para desenvolvimento web (Última versão LTS).
+- **Doctrine ORM**: Para mapeamento objeto-relacional e persistência de dados.
+- **PostgreSQL (versão 17)**: Banco de dados relacional utilizado.
+- **NelmioCorsBundle**: Para habilitar CORS e permitir comunicação com o frontend.
+- **Symfony Security**: Para autenticação e permissionamento.
 
-Already a pro? Just edit this README.md and make it your own. Want to make it easy? [Use the template at the bottom](#editing-this-readme)!
+### Frontend (React)
+- **Node.js 18.20.6**: Ambiente de execução JavaScript utilizado para gerenciar as dependências e scripts do frontend.
+- **React 19**: Biblioteca JavaScript para construção de interfaces de usuário.
+- **Material-UI (MUI)**: Biblioteca de componentes React para design.
+- **Axios**: Cliente HTTP para consumir a API do backend.
+- **React Router DOM**: Para gerenciamento de rotas no frontend.
 
-## Add your files
+---
 
-- [ ] [Create](https://docs.gitlab.com/ee/user/project/repository/web_editor.html#create-a-file) or [upload](https://docs.gitlab.com/ee/user/project/repository/web_editor.html#upload-a-file) files
-- [ ] [Add files using the command line](https://docs.gitlab.com/topics/git/add_files/#add-files-to-a-git-repository) or push an existing Git repository with the following command:
+## Estrutura do Projeto
 
-```
-cd existing_repo
-git remote add origin https://gitlab.com/pedrolucca27/desafio-vox-quadro-societario.git
-git branch -M main
-git push -uf origin main
-```
+### Backend
+- **`src/Controller/`**: Contém os controladores da API.
+- **`src/Entity/`**: Entidades do Doctrine (Empresa, Sócio, etc.).
+- **`src/Repository/`**: Repositórios para acesso aos dados.
+- **`src/Migrations/`**: Migrações do banco de dados.
+- **`config/`**: Configurações do Symfony, incluindo rotas e serviços.
+- **`public/`**: Ponto de entrada da aplicação (arquivo `index.php`).
 
-## Integrate with your tools
+### Frontend
+- **`src/components/`**: Componentes React reutilizáveis.
+- **`src/context/`**: Contextos React para gerenciamento de estado.
+- **`src/routes/`**: Configuração das rotas.
+- **`src/services/`**: Serviços para comunicação com a API.
+- **`src/views/`**: Páginas da aplicação.
 
-- [ ] [Set up project integrations](https://gitlab.com/pedrolucca27/desafio-vox-quadro-societario/-/settings/integrations)
+---
 
-## Collaborate with your team
+## Funcionalidades Implementadas
 
-- [ ] [Invite team members and collaborators](https://docs.gitlab.com/ee/user/project/members/)
-- [ ] [Create a new merge request](https://docs.gitlab.com/ee/user/project/merge_requests/creating_merge_requests.html)
-- [ ] [Automatically close issues from merge requests](https://docs.gitlab.com/ee/user/project/issues/managing_issues.html#closing-issues-automatically)
-- [ ] [Enable merge request approvals](https://docs.gitlab.com/ee/user/project/merge_requests/approvals/)
-- [ ] [Set auto-merge](https://docs.gitlab.com/user/project/merge_requests/auto_merge/)
+### Backend (Symfony)
+- **Autenticação**:
+  - Endpoints para login (`/api/usuarios/login`) e registro (`/api/usuarios/registrar`).
+  - Geração e validação de tokens JWT.
+- **Empresas**:
+  - CRUD completo para empresas (`/api/empresas`).
+  - Validação de dados e integração com PostgreSQL.
+- **Sócios**:
+  - CRUD completo para sócios (`/api/socios`).
+  - Vinculação de sócios a empresas.
 
-## Test and Deploy
+### Frontend (React)
+- **Autenticação**:
+  - Telas de login (`/login`) e registro (`/registrar`).
+  - Armazenamento do token JWT no localStorage.
+- **Dashboard**:
+  - Página inicial (`/dashboard`) com resumo de dados.
+  - Layout comum com barra de navegação e menu lateral.
+- **Empresas**:
+  - Listagem de empresas (`/empresas`).
+  - Formulários para adicionar, editar e excluir empresas.
+- **Sócios**:
+  - Listagem de sócios (`/socios`).
+  - Formulários para adicionar, editar e excluir sócios.
+- **Proteção de Rotas**:
+  - Rotas privadas protegidas pelo componente `PrivateRoute`.
+  - Redirecionamento para `/login` se o usuário não estiver autenticado.
+- **Redirecionamento**:
+  - Rota `*` redireciona para `/` em caso de rotas inválidas.
 
-Use the built-in continuous integration in GitLab.
+## Como Executar o Projeto
 
-- [ ] [Get started with GitLab CI/CD](https://docs.gitlab.com/ee/ci/quick_start/)
-- [ ] [Analyze your code for known vulnerabilities with Static Application Security Testing (SAST)](https://docs.gitlab.com/ee/user/application_security/sast/)
-- [ ] [Deploy to Kubernetes, Amazon EC2, or Amazon ECS using Auto Deploy](https://docs.gitlab.com/ee/topics/autodevops/requirements.html)
-- [ ] [Use pull-based deployments for improved Kubernetes management](https://docs.gitlab.com/ee/user/clusters/agent/)
-- [ ] [Set up protected environments](https://docs.gitlab.com/ee/ci/environments/protected_environments.html)
+### Pré-requisitos
+- **PHP 8.1** ou superior.
+- **Composer** (para gerenciamento de dependências do PHP).
+- **Node.js 18** ou superior e **npm** (para o frontend).
+- **PostgreSQL** (banco de dados).
 
-***
+---
 
-# Editing this README
+### Passo a Passo
 
-When you're ready to make this README your own, just edit this file and use the handy template below (or feel free to structure it however you want - this is just a starting point!). Thanks to [makeareadme.com](https://www.makeareadme.com/) for this template.
+#### 1. Configuração do Backend (Symfony)
 
-## Suggestions for a good README
+> 1. Clone o repositório
+>    ```bash
+>    git clone https://gitlab.com/pedrolucca27/desafio-vox-quadro-societario.git
+>    cd desafio-vox/backend
 
-Every project is different, so consider which of these sections apply to yours. The sections used in the template are suggestions for most open source projects. Also keep in mind that while a README can be too long and detailed, too long is better than too short. If you think your README is too long, consider utilizing another form of documentation rather than cutting out information.
+> 2. Instale as dependências:
+>    ```bash
+>    composer install
+>    ```
 
-## Name
-Choose a self-explaining name for your project.
+> 3. Configure o banco de dados:
+>    - Crie um banco de dados no PostgreSQL.
+>    - Atualize o arquivo `.env` com as credenciais do banco de dados:
+>    - Atenção, é importante especificar na url a versão do seu PostgreSQL
+>      ```env
+>      DATABASE_URL="postgresql://usuario:senha@localhost:5432/nome_do_banco?serverVersion=17&charset=utf8"
+>      ```
 
-## Description
-Let people know what your project can do specifically. Provide context and add a link to any reference visitors might be unfamiliar with. A list of Features or a Background subsection can also be added here. If there are alternatives to your project, this is a good place to list differentiating factors.
+> 4. Execute as migrações:
+>    ```bash
+>    php bin/console doctrine:migrations:migrate
+>    ```
 
-## Badges
-On some READMEs, you may see small images that convey metadata, such as whether or not all the tests are passing for the project. You can use Shields to add some to your README. Many services also have instructions for adding a badge.
+> 5. Inicie o servidor Symfony:
+>    ```bash
+>    symfony server:start
+>    ```
+>    O backend estará disponível em `http://localhost:8000`.
 
-## Visuals
-Depending on what you are making, it can be a good idea to include screenshots or even a video (you'll frequently see GIFs rather than actual videos). Tools like ttygif can help, but check out Asciinema for a more sophisticated method.
+> 6. Documentação da API:
+>    Acesse `http://localhost:8000/api/doc` para visualizar a documentação da API gerada pelo NelmioApiDocBundle.
 
-## Installation
-Within a particular ecosystem, there may be a common way of installing things, such as using Yarn, NuGet, or Homebrew. However, consider the possibility that whoever is reading your README is a novice and would like more guidance. Listing specific steps helps remove ambiguity and gets people to using your project as quickly as possible. If it only runs in a specific context like a particular programming language version or operating system or has dependencies that have to be installed manually, also add a Requirements subsection.
+---
 
-## Usage
-Use examples liberally, and show the expected output if you can. It's helpful to have inline the smallest example of usage that you can demonstrate, while providing links to more sophisticated examples if they are too long to reasonably include in the README.
+#### 2. Configuração do Frontend (React)
 
-## Support
-Tell people where they can go to for help. It can be any combination of an issue tracker, a chat room, an email address, etc.
+> 1. Navegue até a pasta do frontend:
+>    ```bash
+>    cd ../frontend
+>    ```
 
-## Roadmap
-If you have ideas for releases in the future, it is a good idea to list them in the README.
+> 2. Instale as dependências:
+>    ```bash
+>    npm install
+>    ```
 
-## Contributing
-State if you are open to contributions and what your requirements are for accepting them.
+> 3. Configure a URL da API:
+>    - No arquivo `src/services/api.js`, atualize a URL da API para apontar para o backend:
+>      ```javascript
+>      const api = axios.create({
+>        baseURL: 'http://localhost:8000/api', // URL do backend
+>      });
+>      ```
 
-For people who want to make changes to your project, it's helpful to have some documentation on how to get started. Perhaps there is a script that they should run or some environment variables that they need to set. Make these steps explicit. These instructions could also be useful to your future self.
+> 4. Inicie o servidor de desenvolvimento:
+>    ```bash
+>    npm start
+>    ```
+>    O frontend estará disponível em `http://localhost:3000`.
 
-You can also document commands to lint the code or run tests. These steps help to ensure high code quality and reduce the likelihood that the changes inadvertently break something. Having instructions for running tests is especially helpful if it requires external setup, such as starting a Selenium server for testing in a browser.
+## Contato
 
-## Authors and acknowledgment
-Show your appreciation to those who have contributed to the project.
+Se tiver dúvidas, sugestões ou quiser entrar em contato, sinta-se à vontade para me contatar:
 
-## License
-For open source projects, say how it is licensed.
+- **Nome**: Pedro Lucca Monteiro Soares
+- **E-mail**: pedrolucca27@gmail.com
+- **LinkedIn**: https://www.linkedin.com/in/pedro-lucca-dev/
 
-## Project status
-If you have run out of energy or time for your project, put a note at the top of the README saying that development has slowed down or stopped completely. Someone may choose to fork your project or volunteer to step in as a maintainer or owner, allowing your project to keep going. You can also make an explicit request for maintainers.
+---
+
+## Conclusão
+
+Muito obrigado oportunidade de participar deste desafio. E com a entrega, espero que o resultado atenda às expectativas e que possamos trabalhar juntos no futuro!
+
+Agradeço!

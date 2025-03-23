@@ -13,6 +13,7 @@ const Dashboard = () => {
     useEffect(() => {//Fazer requisições para contar o total de empresas e sócios
       countEmpresas();
       countSocios();
+      // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
   return (

@@ -22,8 +22,7 @@ import {
 } from '@mui/material';
 import {
   Edit as EditIcon,
-  Delete as DeleteIcon,
-  Visibility as VisibilityIcon
+  Delete as DeleteIcon
 } from '@mui/icons-material';
 
 const acessaValorObjeto = (obj, path) => {

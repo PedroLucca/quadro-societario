@@ -10,9 +10,7 @@ const EmpresaLista = () => {
   const { 
     empresas, 
     loading, 
-    error, 
-    filtros, 
-    setFiltros,
+    error,
     fetchEmpresas,
     deleteEmpresa, 
     createEmpresa, 
@@ -22,7 +20,6 @@ const EmpresaLista = () => {
   const [abrirForm, setAbrirForm] = useState(false);
   const [abrirModalConfirmacao, setAbrirModalConfirmacao] = useState(false);
   const [empresaAtual, setEmpresaAtual] = useState(null);
-  const [search, setSearch] = useState('');
   const [salvando, setSalvando] = useState(false);
 
   const colunas = [
@@ -40,15 +37,9 @@ const EmpresaLista = () => {
 
 useEffect(() => {//Fazer requisicao para buscar as empresas
       fetchEmpresas();
+      // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
-const handleSearch = (valor) => {
-  setSearch(valor);
-  setFiltros({
-    ...filtros,
-    search: valor
-  });
-};
 
 const handleAdd = () => {
   setEmpresaAtual(null);
@@ -94,7 +85,7 @@ const handleSave = async (data) => {
 };
 
 return (
-  <Box sx={{ width: '100%' }}>
+  <Box>
     <Box sx={{ display: 'flex', justifyContent: 'space-between', mb: 2 }}>
       <Typography variant="h5" component="h2">
         Gerenciamento de Empresas
@@ -117,9 +108,6 @@ return (
       error={error}
       onEdit={handleEdit}
       onDelete={handleDelete}
-      /* searchPlaceholder="Buscar por nome ou CNPJ..."
-      onSearch={handleSearch}
-      search={search} */
     />
 
     <EmpresaForm
