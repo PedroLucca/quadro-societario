@@ -12,9 +12,23 @@ import {
   InputLabel,
   Select,
   MenuItem,
-  FormHelperText
+  FormHelperText,
+  Chip,
+  OutlinedInput,
+  Box
 } from '@mui/material';
 import { EmpresaContext } from '../../context/EmpresaContext';
+
+const ITEM_HEIGHT = 48;
+const ITEM_PADDING_TOP = 8;
+const MenuProps = {
+  PaperProps: {
+    style: {
+      maxHeight: ITEM_HEIGHT * 4.5 + ITEM_PADDING_TOP,
+      width: 250,
+    },
+  },
+};
 
 const SocioForm = ({ open, onClose, onSave, socio, loading }) => {
   const { empresas, loading: loadingEmpresas } = useContext(EmpresaContext);
@@ -22,7 +36,7 @@ const SocioForm = ({ open, onClose, onSave, socio, loading }) => {
   const [form, setForm] = useState({
     nome: '',
     cpf: '',
-    empresa_id: ''
+    empresa_ids: []
   });
   const [erros, setErros] = useState({});
 
@@ -31,13 +45,13 @@ const SocioForm = ({ open, onClose, onSave, socio, loading }) => {
       setForm({
         nome: socio.nome || '',
         cpf: socio.cpf ? String(socio.cpf) : '',
-        empresa_id: socio.empresa.id || ''
+        empresa_ids: socio.empresas ? socio.empresas.map(emp => emp.id) : []
       });
     } else {
       setForm({
         nome: '',
         cpf: '',
-        empresa_id: ''
+        empresa_ids: []
       });
     }
     setErros({});
@@ -71,8 +85,8 @@ const SocioForm = ({ open, onClose, onSave, socio, loading }) => {
       errosAux.cpf = 'CPF inválido';
     }
     
-    if (!form.empresa_id) {
-      errosAux.empresa_id = 'Empresa é obrigatória';
+    if (!form.empresa_ids || form.empresa_ids.length === 0) {
+      errosAux.empresa_ids = 'Selecione pelo menos uma empresa';
     }
     
     setErros(errosAux);
@@ -83,7 +97,7 @@ const SocioForm = ({ open, onClose, onSave, socio, loading }) => {
     if (validarForm()) {
       const formData = {
         ...form,
-        empresa_id: Number(form.empresa_id),
+        empresa_ids: form.empresa_ids.map(id => Number(id)),
         cpf: Number(form.cpf.replace(/\D/g, ''))
       };
       onSave(formData);
@@ -153,15 +167,35 @@ const SocioForm = ({ open, onClose, onSave, socio, loading }) => {
             />
           </Grid2>
           <Grid2 item size={{ xs: 12}}>
-            <FormControl fullWidth error={!!erros.empresa_id} disabled={loading || loadingEmpresas}>
-              <InputLabel id="empresa-select-label">Empresa</InputLabel>
+            <FormControl 
+              fullWidth 
+              error={!!erros.empresa_ids} 
+              disabled={loading || loadingEmpresas}
+            >
+              <InputLabel id="empresa-multiselect-label">Empresas</InputLabel>
               <Select
-                labelId="empresa-select-label"
-                id="empresa-select"
-                name="empresa_id"
-                value={form.empresa_id}
+                labelId="empresa-multiselect-label"
+                id="empresa-multiselect"
+                name="empresa_ids"
+                multiple
+                value={form.empresa_ids}
                 onChange={handleChange}
-                label="Empresa"
+                input={<OutlinedInput label="Empresas" />}
+                renderValue={(selected) => (
+                  <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 0.5 }}>
+                    {selected.map((value) => {
+                      const empresa = empresas.find(emp => emp.id === value);
+                      return (
+                        <Chip 
+                          key={value} 
+                          label={empresa ? empresa.nome : value} 
+                          size="small"
+                        />
+                      );
+                    })}
+                  </Box>
+                )}
+                MenuProps={MenuProps}
                 required
               >
                 {loadingEmpresas ? (
@@ -180,7 +214,7 @@ const SocioForm = ({ open, onClose, onSave, socio, loading }) => {
                   ))
                 )}
               </Select>
-              {erros.empresa_id && <FormHelperText>{erros.empresa_id}</FormHelperText>}
+              {erros.empresa_ids && <FormHelperText>{erros.empresa_ids}</FormHelperText>}
             </FormControl>
           </Grid2>
         </Grid2>
