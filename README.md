@@ -91,7 +91,7 @@ Este projeto foi desenvolvido como parte do desafio técnico para a vaga de Dese
 > 1. Clone o repositório
 >    ```bash
 >    git clone https://gitlab.com/pedrolucca27/desafio-vox-quadro-societario.git
->    cd desafio-vox/backend
+>    cd desafio-vox-quadro-societario/backend
 
 > 2. Instale as dependências:
 >    ```bash
@@ -160,6 +160,6 @@ Se tiver dúvidas, sugestões ou quiser entrar em contato, sinta-se à vontade p
 
 ## Conclusão
 
-Muito obrigado oportunidade de participar deste desafio. E com a entrega, espero que o resultado atenda às expectativas e que possamos trabalhar juntos no futuro!
+Muito obrigado pela oportunidade de participar deste desafio. E com a entrega, espero que o resultado atenda às expectativas e que possamos trabalhar juntos no futuro!
 
 Agradeço!
