@@ -24,7 +24,7 @@ class Empresa
     #[ORM\Column(type: "string", length: 255)]
     private string $endereco;
 
-    #[ORM\OneToMany(mappedBy: "empresa", targetEntity: Socio::class, cascade: ["persist", "remove"])]
+    #[ORM\ManyToMany(targetEntity: Socio::class, mappedBy: "empresas")]
     private Collection $socios;
 
     public function __construct()
@@ -42,6 +42,48 @@ class Empresa
     public function getEndereco(): string { return $this->endereco; }
     public function setEndereco(string $endereco): void { $this->endereco = $endereco; }
 
-    public function getSocios(): Collection { return $this->socios; }
-    public function addSocio(Socio $socio): void { $this->socios->add($socio); $socio->setEmpresa($this); }
+    /**
+     * @return Collection<int, Socio>
+     */
+    public function getSocios(): Collection
+    {
+        return $this->socios;
+    }
+
+    public function addSocio(Socio $socio): void
+    {
+        if (!$this->socios->contains($socio)) {
+            $this->socios[] = $socio;
+            $socio->addEmpresa($this);
+        }
+    }
+
+    public function removeSocio(Socio $socio): void
+    {
+        if ($this->socios->contains($socio)) {
+            $this->socios->removeElement($socio);
+            $socio->removeEmpresa($this);
+        }
+    }
+
+    public function toArray(): array
+    {
+        return [
+            'id' => $this->getId(),
+            'nome' => $this->getNome(),
+            'cnpj' => $this->getCnpj(),
+            'endereco' => $this->getEndereco(),
+        ];
+    }
+
+    public function toFullArray(): array
+    {
+        return [
+            'id' => $this->getId(),
+            'nome' => $this->getNome(),
+            'cnpj' => $this->getCnpj(),
+            'endereco' => $this->getEndereco(),
+            'socios' => $this->getSocios()->map(fn(Socio $socio) => $socio->toArray())->toArray(),
+        ];
+    }
 }

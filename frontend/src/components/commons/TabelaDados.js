@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import {
   Paper,
   Table,
@@ -8,18 +8,34 @@ import {
   TableHead,
   TableRow,
   TablePagination,
-  Box,
   LinearProgress,
-  Typography,
-  TextField,
   IconButton,
   Tooltip,
+  Dialog,
+  DialogTitle,
+  DialogContent,
+  List,
+  ListItem,
+  ListItemText,
+  Button
 } from '@mui/material';
 import {
   Edit as EditIcon,
   Delete as DeleteIcon,
-  Search as SearchIcon,
+  Visibility as VisibilityIcon
 } from '@mui/icons-material';
+
+const acessaValorObjeto = (obj, path) => {
+  if (!path || !obj) return undefined;
+  
+  if (path.includes('.')) {
+    return path.split('.').reduce((prev, curr) => {
+      return prev && prev[curr] !== undefined ? prev[curr] : undefined;
+    }, obj);
+  }
+  
+  return obj[path];
+};
 
 const TabelaDados = ({
   colunas,
@@ -28,13 +44,15 @@ const TabelaDados = ({
   error,
   onEdit,
   onDelete,
-  titulo,
-  searchPlaceholder,
-  onSearch,
-  search,
+  titulo
 }) => {
-  const [pagina, setPagina] = React.useState(0);
-  const [linhasPorPagina, setLinhasPorPagina] = React.useState(10);
+  const [pagina, setPagina] = useState(0);
+  const [linhasPorPagina, setLinhasPorPagina] = useState(10);
+  const [modalAberto, setModalAberto] = useState(false);
+  const [modalConteudo, setModalConteudo] = useState({
+    titulo: '',
+    itens: []
+  });
 
   const handleChangePagina = (event, newPage) => {
     setPagina(newPage);
@@ -47,28 +65,55 @@ const TabelaDados = ({
 
   const visibleRows = dados.slice(pagina * linhasPorPagina, pagina * linhasPorPagina + linhasPorPagina);
 
+  const abrirModal = (titulo, itens) => {
+    setModalConteudo({
+      titulo,
+      itens
+    });
+    setModalAberto(true);
+  };
+
+  const fecharModal = () => {
+    setModalAberto(false);
+  };
+
+  const renderizarCelulaArray = (value, column, row) => {
+    if (!value || !Array.isArray(value) || value.length === 0) {
+      return "Nenhum";
+    }
+
+    return (
+      <Button
+        variant="outlined"
+        size="small"
+        onClick={() => {
+          let itensModal = [];
+          
+          if (column.arrayConfig && column.arrayConfig.displayPath) {
+            itensModal = value.map(item => {
+              const displayValue = acessaValorObjeto(item, column.arrayConfig.displayPath);
+              return {
+                id: item.id || Math.random().toString(),
+                texto: displayValue || JSON.stringify(item)
+              };
+            });
+          } else {
+            itensModal = value.map(item => ({
+              id: item.id || Math.random().toString(),
+              texto: item.nome || JSON.stringify(item)
+            }));
+          }
+          
+          abrirModal(`${column.label} - ${row.nome || ''}`, itensModal);
+        }}
+      >
+        {value.length}
+      </Button>
+    );
+  };
+
   return (
     <Paper elevation={3} sx={{ width: '100%', overflow: 'hidden' }}>
-      <Box sx={{ p: 2, display: 'flex', flexDirection: { xs: 'column', sm: 'row' }, alignItems: { sm: 'center' }, justifyContent: 'space-between', gap: 2 }}>
-        <Typography variant="h6" component="div">
-          {titulo}
-        </Typography>
-        {onSearch && (
-          <Box sx={{ display: 'flex', alignItems: 'center' }}>
-            <TextField
-              variant="outlined"
-              size="small"
-              placeholder={searchPlaceholder || "Buscar..."}
-              value={search}
-              onChange={(e) => onSearch(e.target.value)}
-              InputProps={{
-                endAdornment: <SearchIcon color="action" />,
-              }}
-            />
-          </Box>
-        )}
-      </Box>
-
       {loading && <LinearProgress />}
 
       <TableContainer sx={{ maxHeight: 440 }}>
@@ -94,6 +139,12 @@ const TabelaDados = ({
                   Erro ao carregar dados: {error}
                 </TableCell>
               </TableRow>
+            ) : loading ? (
+              <TableRow>
+                <TableCell colSpan={colunas.length + 1} align="center">
+                  Buscando {titulo.toLowerCase()}...
+                </TableCell>
+              </TableRow>
             ) : visibleRows.length === 0 ? (
               <TableRow>
                 <TableCell colSpan={colunas.length + 1} align="center">
@@ -104,15 +155,21 @@ const TabelaDados = ({
               visibleRows.map((row) => (
                 <TableRow hover role="checkbox" tabIndex={-1} key={row.id}>
                   {colunas.map((column) => {
-                    const value = row[column.id];
+                    const value = acessaValorObjeto(row, column.id);
                     return (
                       <TableCell key={column.id} align={column.align || 'left'}>
-                        {column.format ? column.format(value, row) : value}
+                        {column.isArray ? (
+                          renderizarCelulaArray(value, column, row)
+                        ) : column.format ? (
+                          column.format(value, row)
+                        ) : (
+                          value
+                        )}
                       </TableCell>
                     );
                   })}
                   <TableCell align="center">
-                    <Tooltip titulo="Editar">
+                    <Tooltip title="Editar">
                       <IconButton
                         size="small"
                         color="primary"
@@ -121,7 +178,7 @@ const TabelaDados = ({
                         <EditIcon />
                       </IconButton>
                     </Tooltip>
-                    <Tooltip titulo="Excluir">
+                    <Tooltip title="Excluir">
                       <IconButton
                         size="small"
                         color="error"
@@ -137,13 +194,12 @@ const TabelaDados = ({
           </TableBody>
         </Table>
       </TableContainer>
-
       <TablePagination
         rowsPerPageOptions={[5, 10, 25]}
         component="div"
         count={dados.length}
-        linhasPorPagina={linhasPorPagina}
-        pagina={pagina}
+        rowsPerPage={linhasPorPagina}
+        page={pagina}
         onPageChange={handleChangePagina}
         onRowsPerPageChange={handleLinhasPorPagina}
         labelRowsPerPage="Linhas por página:"
@@ -151,6 +207,25 @@ const TabelaDados = ({
           `${from}-${to} de ${count}`
         }
       />
+
+      <Dialog open={modalAberto} onClose={fecharModal} maxWidth="sm" fullWidth>
+        <DialogTitle>{modalConteudo.titulo}</DialogTitle>
+        <DialogContent>
+          <List>
+            {modalConteudo.itens.length === 0 ? (
+              <ListItem>
+                <ListItemText primary="Nenhum item para mostrar" />
+              </ListItem>
+            ) : (
+              modalConteudo.itens.map((item) => (
+                <ListItem key={item.id} divider>
+                  <ListItemText primary={item.texto} />
+                </ListItem>
+              ))
+            )}
+          </List>
+        </DialogContent>
+      </Dialog>
     </Paper>
   );
 };

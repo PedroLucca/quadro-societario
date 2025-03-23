@@ -1,4 +1,4 @@
-import React, { useContext } from 'react';
+import React, { useContext, useEffect } from 'react';
 import { Box, Grid2, Typography, Paper, CircularProgress } from '@mui/material';
 import { Business as BusinessIcon, Group as GroupIcon } from '@mui/icons-material';
 import { EmpresaContext } from '../context/EmpresaContext';
@@ -6,8 +6,14 @@ import { SocioContext } from '../context/SocioContext';
 import CardTotalizador from '../components/commons/CardTotalizador';
 
 const Dashboard = () => {
-  const { empresas, loading: loadingEmpresas } = useContext(EmpresaContext);
-  const { socios, loading: loadingSocios } = useContext(SocioContext);
+  const { totalEmpresas, loading: loadingEmpresas, countEmpresas } = useContext(EmpresaContext);
+  const { totalSocios, loading: loadingSocios, countSocios } = useContext(SocioContext);
+
+  
+    useEffect(() => {//Fazer requisições para contar o total de empresas e sócios
+      countEmpresas();
+      countSocios();
+    }, []);
 
   return (
     <Box sx={{ flexGrow: 1, mt: 8 }}>
@@ -24,7 +30,7 @@ const Dashboard = () => {
         <Grid2 item size={{ xs: 12, md: 6 }}>
           <CardTotalizador
             titulo="Total de Empresas"
-            valor={loadingEmpresas ? <CircularProgress size={24} /> : empresas.length}
+            valor={loadingEmpresas ? <CircularProgress size={24} /> : totalEmpresas}
             icon={<BusinessIcon sx={{ color: 'primary.main' }} />}
             cor="primary"
           />
@@ -32,7 +38,7 @@ const Dashboard = () => {
         <Grid2 item size={{ xs: 12, md: 6 }}>
           <CardTotalizador
             titulo="Total de Sócios"
-            valor={loadingSocios ? <CircularProgress size={24} /> : socios.length}
+            valor={loadingSocios ? <CircularProgress size={24} /> : totalSocios}
             icon={<GroupIcon sx={{ color: 'secondary.main' }} />}
             cor="secondary"
           />
