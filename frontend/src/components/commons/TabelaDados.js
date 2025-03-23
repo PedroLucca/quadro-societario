@@ -8,17 +8,21 @@ import {
   TableHead,
   TableRow,
   TablePagination,
-  Box,
   LinearProgress,
-  Typography,
-  TextField,
   IconButton,
   Tooltip,
+  Dialog,
+  DialogTitle,
+  DialogContent,
+  List,
+  ListItem,
+  ListItemText,
+  Button
 } from '@mui/material';
 import {
   Edit as EditIcon,
   Delete as DeleteIcon,
-  Search as SearchIcon,
+  Visibility as VisibilityIcon
 } from '@mui/icons-material';
 
 const acessaValorObjeto = (obj, path) => {
@@ -40,13 +44,15 @@ const TabelaDados = ({
   error,
   onEdit,
   onDelete,
-  titulo/* ,
-  searchPlaceholder,
-  onSearch,
-  search, */
+  titulo
 }) => {
   const [pagina, setPagina] = useState(0);
   const [linhasPorPagina, setLinhasPorPagina] = useState(10);
+  const [modalAberto, setModalAberto] = useState(false);
+  const [modalConteudo, setModalConteudo] = useState({
+    titulo: '',
+    itens: []
+  });
 
   const handleChangePagina = (event, newPage) => {
     setPagina(newPage);
@@ -59,24 +65,55 @@ const TabelaDados = ({
 
   const visibleRows = dados.slice(pagina * linhasPorPagina, pagina * linhasPorPagina + linhasPorPagina);
 
+  const abrirModal = (titulo, itens) => {
+    setModalConteudo({
+      titulo,
+      itens
+    });
+    setModalAberto(true);
+  };
+
+  const fecharModal = () => {
+    setModalAberto(false);
+  };
+
+  const renderizarCelulaArray = (value, column, row) => {
+    if (!value || !Array.isArray(value) || value.length === 0) {
+      return "Nenhum";
+    }
+
+    return (
+      <Button
+        variant="outlined"
+        size="small"
+        onClick={() => {
+          let itensModal = [];
+          
+          if (column.arrayConfig && column.arrayConfig.displayPath) {
+            itensModal = value.map(item => {
+              const displayValue = acessaValorObjeto(item, column.arrayConfig.displayPath);
+              return {
+                id: item.id || Math.random().toString(),
+                texto: displayValue || JSON.stringify(item)
+              };
+            });
+          } else {
+            itensModal = value.map(item => ({
+              id: item.id || Math.random().toString(),
+              texto: item.nome || JSON.stringify(item)
+            }));
+          }
+          
+          abrirModal(`${column.label} - ${row.nome || ''}`, itensModal);
+        }}
+      >
+        {value.length}
+      </Button>
+    );
+  };
+
   return (
     <Paper elevation={3} sx={{ width: '100%', overflow: 'hidden' }}>
-      {/* <Box sx={{ p: 2 }}>
-        {onSearch && (
-            <TextField
-              variant="outlined"
-              size="small"
-              fullWidth
-              placeholder={searchPlaceholder || "Buscar..."}
-              value={search}
-              onChange={(e) => onSearch(e.target.value)}
-              InputProps={{
-                endAdornment: <SearchIcon color="action" />,
-              }}
-            />
-        )}
-      </Box> */}
-
       {loading && <LinearProgress />}
 
       <TableContainer sx={{ maxHeight: 440 }}>
@@ -121,12 +158,18 @@ const TabelaDados = ({
                     const value = acessaValorObjeto(row, column.id);
                     return (
                       <TableCell key={column.id} align={column.align || 'left'}>
-                        {column.format ? column.format(value, row) : value}
+                        {column.isArray ? (
+                          renderizarCelulaArray(value, column, row)
+                        ) : column.format ? (
+                          column.format(value, row)
+                        ) : (
+                          value
+                        )}
                       </TableCell>
                     );
                   })}
                   <TableCell align="center">
-                    <Tooltip title={column => column.titulo || "Editar"}>
+                    <Tooltip title="Editar">
                       <IconButton
                         size="small"
                         color="primary"
@@ -135,7 +178,7 @@ const TabelaDados = ({
                         <EditIcon />
                       </IconButton>
                     </Tooltip>
-                    <Tooltip title={column => column.titulo || "Excluir"}>
+                    <Tooltip title="Excluir">
                       <IconButton
                         size="small"
                         color="error"
@@ -164,6 +207,25 @@ const TabelaDados = ({
           `${from}-${to} de ${count}`
         }
       />
+
+      <Dialog open={modalAberto} onClose={fecharModal} maxWidth="sm" fullWidth>
+        <DialogTitle>{modalConteudo.titulo}</DialogTitle>
+        <DialogContent>
+          <List>
+            {modalConteudo.itens.length === 0 ? (
+              <ListItem>
+                <ListItemText primary="Nenhum item para mostrar" />
+              </ListItem>
+            ) : (
+              modalConteudo.itens.map((item) => (
+                <ListItem key={item.id} divider>
+                  <ListItemText primary={item.texto} />
+                </ListItem>
+              ))
+            )}
+          </List>
+        </DialogContent>
+      </Dialog>
     </Paper>
   );
 };

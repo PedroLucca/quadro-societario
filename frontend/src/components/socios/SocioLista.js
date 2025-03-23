@@ -38,9 +38,16 @@ const SocioLista = () => {
         return `${cpf.slice(0, 3)}.${cpf.slice(3, 6)}.${cpf.slice(6, 9)}-${cpf.slice(9)}`;
       }
     },
-    { id: 'empresa.nome', label: 'Empresa', minWidth: 200 },
+    { 
+      id: 'empresas', 
+      label: 'Empresas',
+      minWidth: 120,
+      isArray: true,
+      arrayConfig: {
+        displayPath: 'nome' // O caminho do atributo para exibir na lista do modal
+      }
+    }
   ];
-
   
   useEffect(() => {//Fazer requisicao para buscar os socios
     fetchEmpresas();
