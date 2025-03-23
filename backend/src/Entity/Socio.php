@@ -3,6 +3,8 @@
 namespace App\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 
 #[ORM\Entity]
 #[ORM\Table(name: "socios")]
@@ -19,9 +21,14 @@ class Socio
     #[ORM\Column(type: "string", length: 11)]
     private string $cpf;
 
-    #[ORM\ManyToOne(targetEntity: Empresa::class, inversedBy: "socios")]
-    #[ORM\JoinColumn(nullable: false)]
-    private Empresa $empresa;
+    #[ORM\ManyToMany(targetEntity: Empresa::class, inversedBy: "socios")]
+    #[ORM\JoinTable(name: "socio_empresas")]
+    private Collection $empresas;
+
+    public function __construct()
+    {
+        $this->empresas = new ArrayCollection();
+    }
 
     public function getId(): int { return $this->id; }
     public function getNome(): string { return $this->nome; }
@@ -30,8 +37,29 @@ class Socio
     public function getCpf(): string { return $this->cpf; }
     public function setCpf(string $cpf): void { $this->cpf = $cpf; }
 
-    public function getEmpresa(): Empresa { return $this->empresa; }
-    public function setEmpresa(Empresa $empresa): void { $this->empresa = $empresa; }
+    /**
+     * @return Collection<int, Empresa>
+     */
+    public function getEmpresas(): Collection
+    {
+        return $this->empresas;
+    }
+
+    public function addEmpresa(Empresa $empresa): void
+    {
+        if (!$this->empresas->contains($empresa)) {
+            $this->empresas[] = $empresa;
+            $empresa->addSocio($this);
+        }
+    }
+
+    public function removeEmpresa(Empresa $empresa): void
+    {
+        if ($this->empresas->contains($empresa)) {
+            $this->empresas->removeElement($empresa);
+            $empresa->removeSocio($this);
+        }
+    }
 
     public function toArray(): array
     {
@@ -39,7 +67,7 @@ class Socio
             'id' => $this->getId(),
             'nome' => $this->getNome(),
             'cpf' => $this->getCpf(),
-            'empresa' => $this->getEmpresa()->toArray()
+            'empresas' => $this->getEmpresas()->map(fn(Empresa $empresa) => $empresa->toArray())->toArray(),
         ];
     }
 }

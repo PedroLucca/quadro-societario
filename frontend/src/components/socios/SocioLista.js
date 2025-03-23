@@ -129,9 +129,9 @@ const SocioLista = () => {
         error={error}
         onEdit={handleEdit}
         onDelete={handleDelete}
-        searchPlaceholder="Buscar por nome ou CPF..."
+        /* searchPlaceholder="Buscar por nome ou CPF..."
         onSearch={handleSearch}
-        search={search}
+        search={search} */
       />
 
       <SocioForm

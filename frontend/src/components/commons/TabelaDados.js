@@ -40,10 +40,10 @@ const TabelaDados = ({
   error,
   onEdit,
   onDelete,
-  titulo,
+  titulo/* ,
   searchPlaceholder,
   onSearch,
-  search,
+  search, */
 }) => {
   const [pagina, setPagina] = useState(0);
   const [linhasPorPagina, setLinhasPorPagina] = useState(10);
@@ -61,7 +61,7 @@ const TabelaDados = ({
 
   return (
     <Paper elevation={3} sx={{ width: '100%', overflow: 'hidden' }}>
-      <Box sx={{ p: 2 }}>
+      {/* <Box sx={{ p: 2 }}>
         {onSearch && (
             <TextField
               variant="outlined"
@@ -75,7 +75,7 @@ const TabelaDados = ({
               }}
             />
         )}
-      </Box>
+      </Box> */}
 
       {loading && <LinearProgress />}
 

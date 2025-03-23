@@ -27,29 +27,37 @@ class SocioController extends AbstractController
     public function totalSocios(EntityManagerInterface $em): JsonResponse
     {
         $total = $em->getRepository(Socio::class)->count([]);
-
+        
         return $this->json(['total' => $total]);
     }
 
     #[Route('', methods: ['POST'])]
     public function criarSocio(Request $request, EntityManagerInterface $em): JsonResponse
     {
-        $dados = json_decode($request->getContent(), true);
-        $empresa = $em->getRepository(Empresa::class)->find($dados['empresa_id']);
+        $dados = json_decode($request->getContent(), true); 
 
-        if (!$empresa) {
-            return $this->json(['error' => 'Empresa não encontrada'], 404);
+
+        if (!isset($dados['nome']) || !isset($dados['cpf']) || !isset($dados['empresa_ids'])) {
+            return $this->json(['error' => 'Dados incompletos. É necessário fornecer nome, cpf e empresa_ids.'], 400);
         }
+
 
         $socio = new Socio();
         $socio->setNome($dados['nome']);
         $socio->setCpf($dados['cpf']);
-        $socio->setEmpresa($empresa);
+
+        foreach ($dados['empresa_ids'] as $empresaId) {
+            $empresa = $em->getRepository(Empresa::class)->find($empresaId);
+            if (!$empresa) {
+                return $this->json(['error' => "Empresa com ID $empresaId não encontrada."], 404);
+            }
+            $socio->addEmpresa($empresa);
+        }
 
         $em->persist($socio);
         $em->flush();
 
-        return $this->json($socio, 201);
+        return $this->json($socio->toArray(), 201);
     }
 
 
@@ -63,15 +71,33 @@ class SocioController extends AbstractController
         }
 
         $dados = json_decode($request->getContent(), true);
-        $socio->setNome($dados['nome'] ?? $socio->getNome());
-        $socio->setCpf($dados['cpf'] ?? $socio->getCpf());
-        $socio->setEmpresa($dados['empresa_id'] ? $em->getRepository(Empresa::class)->find($dados['empresa_id']) : $socio->getEmpresa());
+
+        if (isset($dados['nome'])) {
+            $socio->setNome($dados['nome']);
+        }
+        if (isset($dados['cpf'])) {
+            $socio->setCpf($dados['cpf']);
+        }
+        if (isset($dados['empresa_ids'])) {
+     
+            foreach ($socio->getEmpresas() as $empresa) {
+                $socio->removeEmpresa($empresa);
+            }
+
+  
+            foreach ($dados['empresa_ids'] as $empresaId) {
+                $empresa = $em->getRepository(Empresa::class)->find($empresaId);
+                if (!$empresa) {
+                    return $this->json(['error' => "Empresa com ID $empresaId não encontrada."], 404);
+                }
+                $socio->addEmpresa($empresa);
+            }
+        }
 
         $em->flush();
 
         return $this->json($socio->toArray());
     }
-
 
     #[Route('/{id}', methods: ['DELETE'])]
     public function deletarSocio(int $id, EntityManagerInterface $em): JsonResponse

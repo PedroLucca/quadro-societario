@@ -117,9 +117,9 @@ return (
       error={error}
       onEdit={handleEdit}
       onDelete={handleDelete}
-      searchPlaceholder="Buscar por nome ou CNPJ..."
+      /* searchPlaceholder="Buscar por nome ou CNPJ..."
       onSearch={handleSearch}
-      search={search}
+      search={search} */
     />
 
     <EmpresaForm
