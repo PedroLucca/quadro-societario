@@ -1,4 +1,4 @@
-import React, { createContext, useState, useCallback, useEffect } from 'react';
+import React, { createContext, useState, useCallback } from 'react';
 import { socioService } from '../services/socioService';
 
 export const SocioContext = createContext();

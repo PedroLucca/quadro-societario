@@ -11,9 +11,7 @@ const SocioLista = () => {
   const { 
     socios, 
     loading, 
-    error, 
-    filtros, 
-    setFiltros, 
+    error,
     deleteSocio, 
     createSocio, 
     updateSocio,
@@ -25,12 +23,11 @@ const SocioLista = () => {
   const [abrirForm, setAbrirForm] = useState(false);
   const [openConfirm, setOpenConfirm] = useState(false);
   const [socioAtual, setSocioAtual] = useState(null);
-  const [search, setSearch] = useState('');
   const [saving, setSaving] = useState(false);
 
   const colunas = [
-    { id: 'nome', label: 'Nome', minWidth: 200 },
-    { id: 'cpf', label: 'CPF', minWidth: 150, 
+    { id: 'nome', label: 'Nome', minWidth: 100 },
+    { id: 'cpf', label: 'CPF', minWidth: 80, 
       format: (valor) => {
         if (!valor) return '';
         const cpf = String(valor).replace(/\D/g, '');
@@ -41,7 +38,7 @@ const SocioLista = () => {
     { 
       id: 'empresas', 
       label: 'Empresas',
-      minWidth: 120,
+      minWidth: 60,
       isArray: true,
       arrayConfig: {
         displayPath: 'nome' // O caminho do atributo para exibir na lista do modal
@@ -52,15 +49,8 @@ const SocioLista = () => {
   useEffect(() => {//Fazer requisicao para buscar os socios
     fetchEmpresas();
     fetchSocios();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
-
-  const handleSearch = (value) => {
-    setSearch(value);
-    setFiltros({
-      ...filtros,
-      search: value
-    });
-  };
 
   const handleAdd = () => {
     setSocioAtual(null);
@@ -143,9 +133,6 @@ const SocioLista = () => {
         error={error}
         onEdit={handleEdit}
         onDelete={handleDelete}
-        /* searchPlaceholder="Buscar por nome ou CPF..."
-        onSearch={handleSearch}
-        search={search} */
       />
 
       <SocioForm
