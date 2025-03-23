@@ -44,7 +44,7 @@ const SocioForm = ({ open, onClose, onSave, socio, loading }) => {
     if (socio) {
       setForm({
         nome: socio.nome || '',
-        cpf: socio.cpf ? String(socio.cpf) : '',
+        cpf: socio.cpf ? formatarCPF(String(socio.cpf)) : '',
         empresa_ids: socio.empresas ? socio.empresas.map(emp => emp.id) : []
       });
     } else {
