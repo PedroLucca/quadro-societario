@@ -5,7 +5,7 @@ export const EmpresaContext = createContext();
 
 export const EmpresaProvider = ({ children }) => {
   const [empresas, setEmpresas] = useState([]);
-  const [totalEmpresas, setTotalEmpresas] = useState([]);
+  const [totalEmpresas, setTotalEmpresas] = useState(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
   const [filtros, setFiltros] = useState({});
@@ -28,8 +28,8 @@ export const EmpresaProvider = ({ children }) => {
     setLoading(true);
     setError(null);
     try {
-      const response = await empresaService.getAll(filtros);
-      setTotalEmpresas(response.data);
+      const response = await empresaService.getTotal(filtros);
+      setTotalEmpresas(response.data.total);
     } catch (err) {
       setError(err.message || 'Erro ao buscar total de empresas');
       console.error('Erro ao buscar total de empresas:', err);
@@ -85,10 +85,6 @@ export const EmpresaProvider = ({ children }) => {
     }
   };
 
-  /* useEffect(() => {
-    fetchEmpresas();
-  }, [fetchEmpresas]); */
-
   return (
     <EmpresaContext.Provider
       value={{
@@ -99,6 +95,7 @@ export const EmpresaProvider = ({ children }) => {
         filtros,
         setFiltros,
         fetchEmpresas,
+        countEmpresas,
         getEmpresa,
         createEmpresa,
         updateEmpresa,
