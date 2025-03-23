@@ -117,9 +117,6 @@ Este projeto foi desenvolvido como parte do desafio técnico para a vaga de Dese
 >    ```
 >    O backend estará disponível em `http://localhost:8000`.
 
-> 6. Documentação da API:
->    Acesse `http://localhost:8000/api/doc` para visualizar a documentação da API gerada pelo NelmioApiDocBundle.
-
 ---
 
 #### 2. Configuração do Frontend (React)
