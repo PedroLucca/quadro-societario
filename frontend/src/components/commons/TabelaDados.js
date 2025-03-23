@@ -17,7 +17,8 @@ import {
   List,
   ListItem,
   ListItemText,
-  Button
+  Button,
+  DialogActions
 } from '@mui/material';
 import {
   Edit as EditIcon,
@@ -225,6 +226,11 @@ const TabelaDados = ({
             )}
           </List>
         </DialogContent>
+        <DialogActions>
+          <Button onClick={fecharModal}>
+            Fechar
+          </Button>
+        </DialogActions>
       </Dialog>
     </Paper>
   );

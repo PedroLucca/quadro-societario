@@ -1,5 +1,5 @@
 import React, { useContext, useState, useEffect } from 'react';
-import { Box, Button, Typography } from '@mui/material';
+import { Box, Button, CircularProgress, Typography } from '@mui/material';
 import AddIcon from '@mui/icons-material/Add';
 import TabelaDados from '../commons/TabelaDados';
 import ModalConfirmacao from '../commons/ModalConfirmacao';
@@ -20,7 +20,7 @@ const SocioLista = () => {
     fetchSocios 
   } = useContext(SocioContext);
   
-  const { empresas, fetchEmpresas } = useContext(EmpresaContext);
+  const { empresas, fetchEmpresas, loading: loadingEmpresas } = useContext(EmpresaContext);
   
   const [abrirForm, setAbrirForm] = useState(false);
   const [openConfirm, setOpenConfirm] = useState(false);
@@ -121,8 +121,15 @@ const SocioLista = () => {
           Novo Sócio
         </Button>
       </Box>
-
-      {empresas.length === 0 && (
+      {loadingEmpresas && (
+        <Box sx={{ display: 'flex', alignItems: 'flex-start', mb: 2, gap: 3 }}>
+          <CircularProgress size={24} />
+        <Typography variant="body1" sx={{ mb: 2 }}>
+          Buscando empresas...
+        </Typography>
+        </Box>
+      )}
+      {!loadingEmpresas && empresas.length === 0 && (
         <Typography variant="body1" color="error" sx={{ mb: 2 }}>
           Cadastre pelo menos uma empresa antes de adicionar sócios.
         </Typography>

@@ -22,7 +22,7 @@ const EmpresaForm = ({ open, onClose, onSave, empresa, loading }) => {
     if (empresa) {
       setForm({
         nome: empresa.nome || '',
-        cnpj: empresa.cnpj || '',
+        cnpj: formatarCNPJ(empresa.cnpj) || '',
         endereco: empresa.endereco || ''
       });
     } else {
