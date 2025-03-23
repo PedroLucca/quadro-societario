@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useContext } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import {
   Box,
@@ -13,14 +13,16 @@ import {
   ListItemIcon,
   ListItemText,
   useMediaQuery,
-  useTheme
+  useTheme,
 } from '@mui/material';
 import {
   Menu as MenuIcon,
   Dashboard as DashboardIcon,
   Business as BusinessIcon,
   Group as GroupIcon,
+  ExitToApp as ExitToAppIcon,
 } from '@mui/icons-material';
+import { AuthContext } from '../../context/AuthContext';
 
 const drawerWidth = 240;
 
@@ -30,6 +32,9 @@ const Navbar = () => {
   const theme = useTheme();
   const isDesktop = useMediaQuery(theme.breakpoints.up('md'));
   const [abrirMenu, setAbrirMenu] = useState(false);
+
+  // Acesse o contexto de autenticação
+  const { logout } = useContext(AuthContext);
 
   const handleMenuToggle = () => {
     setAbrirMenu(!abrirMenu);
@@ -41,6 +46,11 @@ const Navbar = () => {
     { text: 'Sócios', icon: <GroupIcon />, path: '/socios' },
   ];
 
+  const handleLogout = () => {
+    logout();
+    navigate('/login');
+  };
+
   const drawer = (
     <>
       <Toolbar>
@@ -51,8 +61,8 @@ const Navbar = () => {
       <Divider />
       <List>
         {menuItems.map((item) => (
-          <ListItem 
-            button 
+          <ListItem
+            button
             key={item.text}
             onClick={() => {
               navigate(item.path);
@@ -72,6 +82,21 @@ const Navbar = () => {
             <ListItemText primary={item.text} />
           </ListItem>
         ))}
+
+        <ListItem
+          button
+          onClick={handleLogout}
+          sx={{
+            '&:hover': {
+              backgroundColor: 'rgba(255, 0, 0, 0.08)',
+            },
+          }}
+        >
+          <ListItemIcon>
+            <ExitToAppIcon />
+          </ListItemIcon>
+          <ListItemText primary="Sair" />
+        </ListItem>
       </List>
     </>
   );

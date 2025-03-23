@@ -1,10 +1,10 @@
 import React, { useContext } from 'react';
 import { Navigate, Outlet } from 'react-router-dom';
+import { AuthContext } from '../../context/AuthContext';
 import { CircularProgress, Box } from '@mui/material';
 
 const PrivateRoute = () => {
-    const loading = false;
-    const authenticated = false;
+  const { authenticated, loading } = useContext(AuthContext);
 
   if (loading) {
     return (

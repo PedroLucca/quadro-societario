@@ -1,4 +1,4 @@
-import React, { useState, useContext } from 'react';
+import React, { useState, useContext, useEffect } from 'react';
 import { 
   Box, 
   Button, 
@@ -10,10 +10,8 @@ import {
   Link,
   Alert
 } from '@mui/material';
-import { useNavigate } from 'react-router-dom';
-import { EmpresaContext } from '../context/EmpresaContext';
-import { SocioContext } from '../context/SocioContext';
-import api from '../services/api';
+import { useNavigate, useLocation } from 'react-router-dom';
+import { AuthContext } from '../context/AuthContext';
 
 const Login = () => {
   const [email, setEmail] = useState('');
@@ -21,15 +19,41 @@ const Login = () => {
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
-  const { setEmpresa } = useContext(EmpresaContext);
-  const { setSocio } = useContext(SocioContext);
+  const location = useLocation();
+  const { login, authenticated } = useContext(AuthContext);
+
+  // Redirecionar se já estiver autenticado
+  useEffect(() => {
+    if (authenticated) {
+      navigate('/');
+    }
+  }, [authenticated, navigate]);
+
+  // Verificar se há mensagem de sucesso do registro
+  useEffect(() => {
+    if (location.state?.message) {
+      setError('');
+    }
+  }, [location.state]);
 
   const handleLogin = async (e) => {
     e.preventDefault();
     setError('');
     setLoading(true);
 
-
+    try {
+      const result = await login({ email, senha });
+      
+      if (result.success) {
+        navigate('/');
+      } else {
+        setError(result.error);
+      }
+    } catch (err) {
+      setError('Falha ao realizar login. Verifique suas credenciais.');
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -56,10 +80,25 @@ const Login = () => {
             component="h1" 
             variant="h4" 
             color="primary" 
-            sx={{ fontWeight: 'bold', mb: 3 }}
+            sx={{ fontWeight: 'bold' }}
           >
-            VOX - Quadro Societário
+            VOX
           </Typography>
+
+          <Typography 
+            component="h1" 
+            variant="h6" 
+            color="text.secondary" 
+            sx={{ fontWeight: 'bold', mb: 2 }}
+          >
+            Quadro Societário
+          </Typography>
+          
+          {location.state?.message && (
+            <Alert severity="success" sx={{ width: '100%', mb: 2 }}>
+              {location.state.message}
+            </Alert>
+          )}
           
           {error && <Alert severity="error" sx={{ width: '100%', mb: 2 }}>{error}</Alert>}
           
@@ -71,6 +110,7 @@ const Login = () => {
               id="email"
               label="Email"
               name="email"
+              size="small"
               autoComplete="email"
               autoFocus
               value={email}
@@ -83,6 +123,7 @@ const Login = () => {
               name="senha"
               label="Senha"
               type="password"
+              size="small"
               id="senha"
               autoComplete="current-password"
               value={senha}

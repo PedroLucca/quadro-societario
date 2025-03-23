@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useContext, useEffect } from 'react';
 import { 
   Box, 
   Button, 
@@ -11,7 +11,7 @@ import {
   Alert
 } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
-import api from '../services/api';
+import { AuthContext } from '../context/AuthContext';
 
 const Registrar = () => {
   const [nome, setNome] = useState('');
@@ -21,17 +21,46 @@ const Registrar = () => {
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
+  const { register, authenticated } = useContext(AuthContext);
+
+  // Redirecionar se já estiver autenticado
+  useEffect(() => {
+    if (authenticated) {
+      navigate('/');
+    }
+  }, [authenticated, navigate]);
 
   const handleRegistro = async (e) => {
     e.preventDefault();
     setError('');
 
+    // Validações básicas
     if (senha !== confirmSenha) {
       setError('As senhas não coincidem');
       return;
     }
 
+    if (senha.length < 6) {
+      setError('A senha deve ter pelo menos 6 caracteres');
+      return;
+    }
+
     setLoading(true);
+
+    try {
+      const result = await register({ nome, email, senha });
+      
+      if (result.success) {
+        // Se o registro for bem-sucedido, redirecione para o login
+        navigate('/login', { state: { message: 'Cadastro realizado com sucesso! Faça login para continuar.' } });
+      } else {
+        setError(result.error);
+      }
+    } catch (err) {
+      setError('Falha ao realizar o registro. Tente novamente.');
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -55,13 +84,22 @@ const Registrar = () => {
           }}
         >
           <Typography 
-            component="h1" 
-            variant="h4" 
-            color="primary" 
-            sx={{ fontWeight: 'bold', mb: 3 }}
-          >
-            VOX - Quadro Societário
-          </Typography>
+                      component="h1" 
+                      variant="h4" 
+                      color="primary" 
+                      sx={{ fontWeight: 'bold' }}
+                    >
+                      VOX
+                    </Typography>
+          
+                    <Typography 
+                      component="h1" 
+                      variant="h6" 
+                      color="text.secondary" 
+                      sx={{ fontWeight: 'bold', mb: 2 }}
+                    >
+                      Quadro Societário
+                    </Typography>
           <Typography component="h2" variant="h6" sx={{ mb: 2 }}>
             Criar uma nova conta
           </Typography>
@@ -73,6 +111,7 @@ const Registrar = () => {
               margin="normal"
               required
               fullWidth
+              size="small"
               id="nome"
               label="Nome Completo"
               name="nome"
@@ -85,6 +124,7 @@ const Registrar = () => {
               margin="normal"
               required
               fullWidth
+              size="small"
               id="email"
               label="Email"
               name="email"
@@ -96,6 +136,7 @@ const Registrar = () => {
               margin="normal"
               required
               fullWidth
+              size="small"
               name="senha"
               label="Senha"
               type="password"
@@ -108,6 +149,7 @@ const Registrar = () => {
               margin="normal"
               required
               fullWidth
+              size="small"
               name="confirmSenha"
               label="Confirmar Senha"
               type="password"
