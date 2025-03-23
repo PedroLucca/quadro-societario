@@ -16,10 +16,11 @@ const SocioLista = () => {
     setFiltros, 
     deleteSocio, 
     createSocio, 
-    updateSocio 
+    updateSocio,
+    fetchSocios 
   } = useContext(SocioContext);
   
-  const { empresas } = useContext(EmpresaContext);
+  const { empresas, fetchEmpresas } = useContext(EmpresaContext);
   
   const [abrirForm, setAbrirForm] = useState(false);
   const [openConfirm, setOpenConfirm] = useState(false);
@@ -30,15 +31,21 @@ const SocioLista = () => {
   const colunas = [
     { id: 'nome', label: 'Nome', minWidth: 200 },
     { id: 'cpf', label: 'CPF', minWidth: 150, 
-      format: (value) => {
-        if (!value) return '';
-        const cpf = String(value).replace(/\D/g, '');
-        if (cpf.length !== 11) return value;
+      format: (valor) => {
+        if (!valor) return '';
+        const cpf = String(valor).replace(/\D/g, '');
+        if (cpf.length !== 11) return valor;
         return `${cpf.slice(0, 3)}.${cpf.slice(3, 6)}.${cpf.slice(6, 9)}-${cpf.slice(9)}`;
       }
     },
-    { id: 'empresa_nome', label: 'Empresa', minWidth: 200 },
+    { id: 'empresa.nome', label: 'Empresa', minWidth: 200 },
   ];
+
+  
+  useEffect(() => {//Fazer requisicao para buscar os socios
+    fetchEmpresas();
+    fetchSocios();
+  }, []);
 
   const handleSearch = (value) => {
     setSearch(value);

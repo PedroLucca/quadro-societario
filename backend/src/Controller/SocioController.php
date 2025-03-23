@@ -17,7 +17,10 @@ class SocioController extends AbstractController
     public function listarSocios(EntityManagerInterface $em): JsonResponse
     {
         $socios = $em->getRepository(Socio::class)->findAll();
-        return $this->json($socios);
+        $lista = array_map(function(Socio $socio) {
+            return $socio->toArray();
+        }, $socios);
+        return $this->json($lista);
     }
 
     #[Route('/total', methods: ['GET'])]
@@ -66,7 +69,7 @@ class SocioController extends AbstractController
 
         $em->flush();
 
-        return $this->json($socio);
+        return $this->json($socio->toArray());
     }
 
 

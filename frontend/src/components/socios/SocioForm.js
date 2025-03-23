@@ -31,7 +31,7 @@ const SocioForm = ({ open, onClose, onSave, socio, loading }) => {
       setForm({
         nome: socio.nome || '',
         cpf: socio.cpf ? String(socio.cpf) : '',
-        empresa_id: socio.empresa_id || ''
+        empresa_id: socio.empresa.id || ''
       });
     } else {
       setForm({

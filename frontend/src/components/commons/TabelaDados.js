@@ -21,6 +21,18 @@ import {
   Search as SearchIcon,
 } from '@mui/icons-material';
 
+const acessaValorObjeto = (obj, path) => {
+  if (!path || !obj) return undefined;
+  
+  if (path.includes('.')) {
+    return path.split('.').reduce((prev, curr) => {
+      return prev && prev[curr] !== undefined ? prev[curr] : undefined;
+    }, obj);
+  }
+  
+  return obj[path];
+};
+
 const TabelaDados = ({
   colunas,
   dados,
@@ -93,7 +105,7 @@ const TabelaDados = ({
             ) : loading ? (
               <TableRow>
                 <TableCell colSpan={colunas.length + 1} align="center">
-                  Buscando empresas...
+                  Buscando {titulo.toLowerCase()}...
                 </TableCell>
               </TableRow>
             ) : visibleRows.length === 0 ? (
@@ -106,7 +118,7 @@ const TabelaDados = ({
               visibleRows.map((row) => (
                 <TableRow hover role="checkbox" tabIndex={-1} key={row.id}>
                   {colunas.map((column) => {
-                    const value = row[column.id];
+                    const value = acessaValorObjeto(row, column.id);
                     return (
                       <TableCell key={column.id} align={column.align || 'left'}>
                         {column.format ? column.format(value, row) : value}
@@ -114,7 +126,7 @@ const TabelaDados = ({
                     );
                   })}
                   <TableCell align="center">
-                    <Tooltip titulo="Editar">
+                    <Tooltip title={column => column.titulo || "Editar"}>
                       <IconButton
                         size="small"
                         color="primary"
@@ -123,7 +135,7 @@ const TabelaDados = ({
                         <EditIcon />
                       </IconButton>
                     </Tooltip>
-                    <Tooltip titulo="Excluir">
+                    <Tooltip title={column => column.titulo || "Excluir"}>
                       <IconButton
                         size="small"
                         color="error"
