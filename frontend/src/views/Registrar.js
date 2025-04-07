@@ -80,14 +80,6 @@ const Registrar = () => {
             width: '100%'
           }}
         >
-          <Typography 
-                      component="h1" 
-                      variant="h4" 
-                      color="primary" 
-                      sx={{ fontWeight: 'bold' }}
-                    >
-                      VOX
-                    </Typography>
           
                     <Typography 
                       component="h1" 

@@ -1,6 +1,6 @@
-# Desafio VOX - Quadro Societário
+# Projeto Fullstack - Quadro Societário
 
-Este projeto foi desenvolvido como parte do desafio técnico para a vaga de Desenvolvedor Fullstack - Home Office na Vox Tecnologia. O sistema consiste em um backend desenvolvido em Symfony (PHP) e um frontend em React, que juntos permitem o cadastro de empresas e seus respectivos quadros societários.
+Este projeto foi desenvolvido como parte de um estudo prático de desenvolvimento fullstack. A aplicação consiste em um backend desenvolvido em Symfony (PHP) e um frontend em React, permitindo o cadastro de empresas e seus respectivos quadros societários.
 
 ---
 
@@ -74,6 +74,8 @@ Este projeto foi desenvolvido como parte do desafio técnico para a vaga de Dese
 - **Redirecionamento**:
   - Rota `*` redireciona para `/` em caso de rotas inválidas.
 
+---
+
 ## Como Executar o Projeto
 
 ### Pré-requisitos
@@ -88,30 +90,30 @@ Este projeto foi desenvolvido como parte do desafio técnico para a vaga de Dese
 
 #### 1. Configuração do Backend (Symfony)
 
-> 1. Clone o repositório
+> 1. Clone o repositório  
 >    ```bash
->    git clone https://gitlab.com/pedrolucca27/desafio-vox-quadro-societario.git
->    cd desafio-vox-quadro-societario/backend
+>    git clone https://github.com/PedroLucca/quadro-societario.git
+>    cd quadro-societario/backend
+>    ```
 
-> 2. Instale as dependências:
+> 2. Instale as dependências:  
 >    ```bash
 >    composer install
 >    ```
 
-> 3. Configure o banco de dados:
->    - Crie um banco de dados no PostgreSQL.
->    - Atualize o arquivo `.env` com as credenciais do banco de dados:
->    - Atenção, é importante especificar na url a versão do seu PostgreSQL
+> 3. Configure o banco de dados:  
+>    - Crie um banco de dados no PostgreSQL.  
+>    - Atualize o arquivo `.env` com as credenciais do banco de dados:  
 >      ```env
 >      DATABASE_URL="postgresql://usuario:senha@localhost:5432/nome_do_banco?serverVersion=17&charset=utf8"
 >      ```
 
-> 4. Execute as migrações:
+> 4. Execute as migrações:  
 >    ```bash
 >    php bin/console doctrine:migrations:migrate
 >    ```
 
-> 5. Inicie o servidor Symfony:
+> 5. Inicie o servidor Symfony:  
 >    ```bash
 >    symfony server:start
 >    ```
@@ -121,42 +123,42 @@ Este projeto foi desenvolvido como parte do desafio técnico para a vaga de Dese
 
 #### 2. Configuração do Frontend (React)
 
-> 1. Navegue até a pasta do frontend:
+> 1. Navegue até a pasta do frontend:  
 >    ```bash
 >    cd ../frontend
 >    ```
 
-> 2. Instale as dependências:
+> 2. Instale as dependências:  
 >    ```bash
 >    npm install
 >    ```
 
-> 3. Configure a URL da API:
->    - No arquivo `src/services/api.js`, atualize a URL da API para apontar para o backend:
+> 3. Configure a URL da API:  
+>    - No arquivo `src/services/api.js`, atualize a URL da API para apontar para o backend:  
 >      ```javascript
 >      const api = axios.create({
 >        baseURL: 'http://localhost:8000/api', // URL do backend
 >      });
 >      ```
 
-> 4. Inicie o servidor de desenvolvimento:
+> 4. Inicie o servidor de desenvolvimento:  
 >    ```bash
 >    npm start
 >    ```
 >    O frontend estará disponível em `http://localhost:3000`.
 
+---
+
 ## Contato
 
-Se tiver dúvidas, sugestões ou quiser entrar em contato, sinta-se à vontade para me contatar:
+Caso tenha dúvidas, sugestões ou deseje trocar ideias:
 
-- **Nome**: Pedro Lucca Monteiro Soares
-- **E-mail**: pedrolucca27@gmail.com
-- **LinkedIn**: https://www.linkedin.com/in/pedro-lucca-dev/
+- **Nome**: Pedro Lucca Monteiro Soares  
+- **E-mail**: pedrolucca27@gmail.com  
+- **LinkedIn**: [linkedin.com/in/pedro-lucca-dev](https://www.linkedin.com/in/pedro-lucca-dev/)
 
 ---
 
 ## Conclusão
 
-Muito obrigado pela oportunidade de participar deste desafio. E com a entrega, espero que o resultado atenda às expectativas e que possamos trabalhar juntos no futuro!
-
-Agradeço!
+Este projeto foi uma excelente oportunidade para estudar conceitos de desenvolvimento fullstack moderno, com foco em boas práticas, autenticação, relacionamentos complexos entre entidades e interfaces amigáveis. Ele pode servir como base para projetos mais robustos e profissionais no futuro.
