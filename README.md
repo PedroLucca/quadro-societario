@@ -1,4 +1,4 @@
-# Projeto Fullstack - Quadro Societário
+# Quadro Societário
 
 Este projeto foi desenvolvido como parte de um estudo prático de desenvolvimento fullstack. A aplicação consiste em um backend desenvolvido em Symfony (PHP) e um frontend em React, permitindo o cadastro de empresas e seus respectivos quadros societários.
 
